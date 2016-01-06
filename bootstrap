@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Idempotent bootstrap script to stand up a new development Mac
-# Subsequent runs will ensure packages are up-to-date.
-
 set -e
 
 PATH="/usr/local/bin:$PATH"
@@ -48,20 +45,22 @@ else
 	brew upgrade
 fi
 
-send_green "Installing Taps..."
 taps=(
 	homebrew/dupes
 	caskroom/fonts
 )
+send_green "Installing ${#taps[@]} Taps..."
 
 for i in ${taps[@]}; do
+	echo -n "$i "
 	[[ ! -z $(brew tap | grep -E "^${i}$") ]] || brew tap $i;
 done
+echo ""
 
 send_green "Installing Caskroom..."
 silently brew install caskroom/cask/brew-cask
 
-send_green "Installing Casks..."
+################################# Casks ################################
 casks=(
 	dropbox
 	expandrive
@@ -82,12 +81,15 @@ casks=(
 	font-inconsolata
 	font-ubuntu
 )
+send_green "Installing ${#casks[@]} Casks... "
 
 for i in ${casks[@]}; do
+	echo -n "$i "
 	(silently brew cask ls --appdir=/Applications --fontdir=/Library/Fonts $i) || sudo brew cask install --force --appdir=/Applications --fontdir=/Library/Fonts $i;
 done
+echo ""
 
-send_green "Installing Brews..."
+################################# Brews ################################
 brews=(
 	git
 	git-extras
@@ -95,30 +97,39 @@ brews=(
 	ffmpeg
 	logstalgia
 )
+send_green "Installing ${#brews[@]} Brews..."
 
 for i in ${brews[@]}; do
+	echo -n "$i "
 	[[ -n $(brew ls --versions $i) ]] || brew install $i
 done
+echo ""
 
-send_green "Installing easy_install Apps..."
-easy_installs=(
-	tvnamer
-)
-
-# there has to be a better way of checking for packages through easy_install
-for i in ${easy_installs[@]}; do
-	[[ -n $(which $i) ]] || sudo easy_install $i
-done
-
-send_green "Installing Gems..."
+################################# Gems ################################
 gems=(
 	jekyll
 	jekyll-assets
 	s3_website
 )
+send_green "Installing ${#gems[@]} Gems..."
 
 for i in ${gems[@]}; do
+	echo -n "$i "
 	[[ -n $(sudo gem list | grep "$i ") ]] || sudo gem install $i
 done;
+echo ""
+
+################################# Python Apps ################################
+easy_installs=(
+	tvnamer
+)
+send_green "Installing ${#easy_installs[@]} Python Apps..."
+
+# there has to be a better way of checking for packages through easy_install
+for i in ${easy_installs[@]}; do
+	echo -n "$i "
+	[[ -n $(which $i) ]] || sudo easy_install $i
+done
+echo ""
 
 send_yellow "All done. Enjoy your shiny new computer!"
