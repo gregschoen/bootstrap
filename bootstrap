@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# Idempotent bootstrap script to stand up a new development Mac
+# Subsequent runs will ensure packages are up-to-date.
+
+set -e
+
+PATH="/usr/local/bin:$PATH"
+
+RESTORE=$(echo -en '\033[0m')
+RED=$(echo -en '\033[00;31m')
+GREEN=$(echo -en '\033[00;32m')
+YELLOW=$(echo -en '\033[00;33m')
+
+silently() { $* >/dev/null 2>&1; }
+ignore_error() { $* || echo -n; }
+send_green() { echo "----> ${GREEN}${1}${RESTORE}"; }
+send_yellow() { echo "----> ${YELLOW}${1}${RESTORE}"; }
+send_red() { echo "----> ${RED}${1}${RESTORE}"; }
+
+if ! [[ -x /Library/Developer/CommandLineTools ]]; then
+	send_green 'Installing Command Line Tools...'
+	xcode-select --install
+fi
+
+if [[ -z $(sudo grep "$USER.*NOPASSWD" /etc/sudoers) ]]; then
+	send_green "Disable password for sudo..."
+	echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers > /dev/null
+fi
+
+# multi-user and homebrew gets weird
+send_green "Repairing file permissions..."
+paths=(
+	"/usr/local"
+	"/Library/Caches/Homebrew"
+	"/opt/homebrew-cask"
+)
+
+sudo chgrp -R admin ${paths[@]}
+sudo chmod -R g+w ${paths[@]}
+
+if [ ! -x /usr/local/bin/brew ]; then
+	send_yellow "Installing Homebrew..."
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+else
+	send_green "Updating Homebrew..."
+	brew update
+	brew upgrade
+fi
+
+send_green "Installing Taps..."
+taps=(
+	homebrew/dupes
+	caskroom/fonts
+)
+
+for i in ${taps[@]}; do
+	[[ ! -z $(brew tap | grep -E "^${i}$") ]] || brew tap $i;
+done
+
+send_green "Installing Caskroom..."
+silently brew install caskroom/cask/brew-cask
+
+send_green "Installing Casks..."
+casks=(
+	dropbox
+	expandrive
+	flux
+	handbrake
+	hipchat
+	istumbler
+	keyboard-cleaner
+	macdown
+	minecraft
+	slack
+	smcfancontrol
+	sublime-text
+	transmission
+	renamer
+	virtualbox
+	vlc
+	font-inconsolata
+	font-ubuntu
+)
+
+for i in ${casks[@]}; do
+	(silently brew cask ls --appdir=/Applications --fontdir=/Library/Fonts $i) || sudo brew cask install --force --appdir=/Applications --fontdir=/Library/Fonts $i;
+done
+
+send_green "Installing Brews..."
+brews=(
+	git
+	git-extras
+	htop-osx
+	ffmpeg
+	logstalgia
+)
+
+for i in ${brews[@]}; do
+	[[ -n $(brew ls --versions $i) ]] || brew install $i
+done
+
+send_green "Installing easy_install Apps..."
+easy_installs=(
+	tvnamer
+)
+
+# there has to be a better way of checking for packages through easy_install
+for i in ${easy_installs[@]}; do
+	[[ -n $(which $i) ]] || sudo easy_install $i
+done
+
+send_green "Installing Gems..."
+gems=(
+	jekyll
+	jekyll-assets
+	s3_website
+)
+
+for i in ${gems[@]}; do
+	[[ -n $(sudo gem list | grep "$i ") ]] || sudo gem install $i
+done;
+
+send_yellow "All done. Enjoy your shiny new computer!"
