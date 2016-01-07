@@ -57,9 +57,6 @@ for i in ${taps[@]}; do
 done
 echo ""
 
-send_green "Installing Caskroom..."
-silently brew install caskroom/cask/brew-cask
-
 ################################# Casks ################################
 casks=(
 	dropbox
@@ -96,6 +93,7 @@ brews=(
 	htop-osx
 	ffmpeg
 	logstalgia
+	tvnamer
 )
 send_green "Installing ${#brews[@]} Brews..."
 
@@ -117,19 +115,6 @@ for i in ${gems[@]}; do
 	echo -n "$i "
 	[[ -n $(sudo gem list | grep "$i ") ]] || sudo gem install $i
 done;
-echo ""
-
-################################# Python Apps ################################
-easy_installs=(
-	tvnamer
-)
-send_green "Installing ${#easy_installs[@]} Python Apps..."
-
-# there has to be a better way of checking for packages through easy_install
-for i in ${easy_installs[@]}; do
-	echo -n "$i "
-	[[ -n $(which $i) ]] || sudo easy_install $i
-done
 echo ""
 
 send_yellow "All done. Enjoy your shiny new computer!"
