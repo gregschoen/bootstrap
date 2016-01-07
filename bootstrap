@@ -15,14 +15,169 @@ send_green() { echo "----> ${GREEN}${1}${RESTORE}"; }
 send_yellow() { echo "----> ${YELLOW}${1}${RESTORE}"; }
 send_red() { echo "----> ${RED}${1}${RESTORE}"; }
 
+################################# Preferences ################################
+if [[ -z $(sudo grep "$USER.*NOPASSWD" /etc/sudoers) ]]; then
+	send_red "(System) Disable password for sudo"
+	echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers > /dev/null
+fi
+
+if [[ -z $(defaults read NSGlobalDomain com.apple.swipescrolldirection | grep 0) ]]; then
+	send_green "(System) Natural Scrolling: Off"
+	defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+fi
+
+if [[ -z $(sudo defaults read /Library/Preferences/com.apple.alf globalstate | grep 1) ]]; then
+	send_green "(System) Firewall: On"
+	sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+fi
+
+if [[ -z $(sudo systemsetup -getremotelogin | grep "Remote Login: On") ]]; then
+	send_green "(System) Remote Login: On"
+	sudo systemsetup -setremotelogin on
+fi
+
+if [[ -z $(sudo systemsetup -getrestartfreeze | grep "Restart After Freeze: On") ]]; then
+	send_green "(System) Restart After Freeze: On"
+	sudo systemsetup -setrestartfreeze on
+fi
+
+if [[ -z $(defaults read com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking | grep 1) ]]; then
+	output_green "(System) Trackpad Tap to Click: On"
+	defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+fi
+
+if [[ -z $(defaults read NSGlobalDomain com.apple.mouse.tapBehavior | grep 1) ]]; then
+	output_green "(System) Mouse Tap to Click: On"
+	defaults write NSGlobalDomain com.apple.mouse.tapBehavior -integer 1
+fi
+
+if [[ -z $(defaults read NSGlobalDomain NSNavPanelExpandedStateForSaveMode | grep 1) ]]; then
+	send_green "(System) Expand Save Panel: On"
+	defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+fi
+
+if [[ -z $(defaults read com.apple.finder FXPreferredViewStyle | grep clmv) ]]; then
+	send_green "(Finder) Preferred View Style: Column View"
+	defaults write com.apple.finder FXPreferredViewStyle -string "clmv"; KILL_FINDER=true
+fi
+
+if [[ -z $(defaults read com.apple.finder WarnOnEmptyTrash | grep 0) ]]; then
+	send_green "(Finder) Empty Trash Without Prompt: On"
+	defaults write com.apple.finder WarnOnEmptyTrash -bool false; KILL_FINDER=true
+fi
+
+if [[ -z $(defaults read com.apple.finder EmptyTrashSecurely | grep 1) ]]; then
+	send_green "(Finder) Empty Trash Securely: On"
+	defaults write com.apple.finder EmptyTrashSecurely -bool true; KILL_FINDER=true
+fi
+
+if [[ -z $(defaults read com.apple.finder AppleShowAllFiles | grep 1) ]]; then
+	send_green "(Finder) AppleShowAllFiles: On"
+	defaults write com.apple.finder AppleShowAllFiles -bool true; KILL_FINDER=true
+fi
+
+if [[ -z $(defaults read com.apple.finder AppleShowAllExtensions | grep 1) ]]; then
+	send_green "(Finder) AppleShowAllExtensions: On"
+	defaults write com.apple.finder AppleShowAllExtensions -bool true; KILL_FINDER=true
+fi
+
+if [[ -z $(defaults read com.apple.finder ShowHardDrivesOnDesktop | grep 1) ]]; then
+	send_green "(Finder) ShowHardDrivesOnDesktop: On"
+	defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true; KILL_FINDER=true
+fi
+
+if [[ -z $(defaults read com.apple.desktopservices DSDontWriteNetworkStores | grep 1) ]]; then
+	send_green "(DesktopServices) DSDontWriteNetworkStores: On"
+	defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+fi
+
+if [[ -z $(defaults read com.apple.frameworks.diskimages skip-verify | grep 1) ]]; then
+	send_green "(DiskImages) Skip Verify: On"
+	defaults write com.apple.frameworks.diskimages skip-verify -bool true
+fi
+
+if [[ -z $(defaults read com.apple.frameworks.diskimages skip-verify-locked | grep 1) ]]; then
+	send_green "(DiskImages) Skip Verify Locked: On"
+	defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
+fi
+
+if [[ -z $(defaults read com.apple.frameworks.diskimages skip-verify-remote | grep 1) ]]; then
+	send_green "(DiskImages) Skip Verify Remote: On"
+	defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
+fi
+
+if [[ -z $(defaults read com.apple.dock autohide | grep -E ^1$) ]]; then
+	send_green "(Dock) Autohide: On"
+	defaults write com.apple.dock autohide -bool true; KILL_DOCK=true
+fi
+
+if [[ -z $(defaults read com.apple.dock wvous-bl-corner | grep -E ^10$) ]]; then
+	send_green "(Dock) Bottom Left Hot Corner: Sleep Display"
+	defaults write com.apple.dock wvous-bl-corner -integer 10; KILL_DOCK=true
+fi
+
+if [[ -z $(defaults read com.apple.dock wvous-br-corner | grep -E ^10$) ]]; then
+	send_green "(Dock) Bottom Right Hot Corner: Sleep Display"
+	defaults write com.apple.dock wvous-br-corner -integer 10; KILL_DOCK=true
+fi
+
+if [[ -z $(defaults read com.apple.dock tilesize | grep -E ^36$) ]]; then
+	send_green "(Dock) Tilesize: 36px"
+	defaults write com.apple.dock tilesize -integer 36; KILL_DOCK=true
+fi
+
+if [[ -z $(defaults read com.apple.dock magnification | grep -E ^1$) ]]; then
+	send_green "(Dock) Magnification: On"
+	defaults write com.apple.dock magnification -bool true; KILL_DOCK=true
+fi
+
+if [[ -z $(defaults read com.apple.dock largesize | grep -E ^64$) ]]; then
+	send_green "(Dock) Magnified Tilesize: 64px"
+	defaults write com.apple.dock largesize -integer 64; KILL_DOCK=true
+fi
+
+if [[ -z $(defaults read com.apple.screensaver askForPasswordDelay | grep -E ^5$) ]]; then
+	send_green "(Screensaver) AskForPasswordDelay: 5s"
+	defaults write com.apple.screensaver askForPasswordDelay -integer 5
+fi
+
+if [[ -z $(defaults read com.Apple.Terminal "Default Window Settings" | grep -E ^Pro$) ]]; then
+	send_green "(Terminal) Default Theme: Pro"
+	defaults write com.Apple.Terminal "Default Window Settings" -string "Pro"
+fi
+
+if [[ -z $(defaults read com.Apple.Terminal "Startup Window Settings" | grep -E ^Pro$) ]]; then
+	send_green "(Terminal) Startup Theme: Pro"
+	defaults write com.Apple.Terminal "Startup Window Settings" -string "Pro"
+fi
+
+if [[ -z $(defaults read com.apple.screencapture name | grep -E ^Screenshot$) ]]; then
+	send_green "(ScreenCapture) Default Screenshot Save Name: Screenshot"
+	defaults write com.apple.screencapture location "Screenshot"
+fi
+
+if [[ -z $(defaults read com.apple.screencapture location | grep -E Dropbox/Screenshots/$) ]]; then
+	if [[ -d ~/Dropbox/Screenshots/ ]]; then
+		send_green "(ScreenCapture) Default Screenshot Save Location: ~/Dropbox/Screenshots"
+		defaults write com.apple.screencapture location ~/Dropbox/Screenshots/; KILL_SYSTEMUISERVER=true
+	else
+		send_red "Dropbox is not currently available, rerun when Dropbox is synced!"
+	fi
+fi
+
+if [[ $KILL_FINDER ]]; then 
+	send_yellow "Killing Finder"; killall Finder; 
+fi
+if [[ $KILL_DOCK ]]; then 
+	send_yellow "Killing Dock"; killall Dock; 
+fi
+if [[ $KILL_SYSTEMUISERVER ]]; then 
+	send_yellow "Killing SystemUIServer"; killall SystemUIServer; 
+fi
+
 if ! [[ -x /Library/Developer/CommandLineTools ]]; then
 	send_green 'Installing Command Line Tools...'
 	xcode-select --install
-fi
-
-if [[ -z $(sudo grep "$USER.*NOPASSWD" /etc/sudoers) ]]; then
-	send_green "Disable password for sudo..."
-	echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers > /dev/null
 fi
 
 # multi-user and homebrew gets weird
@@ -63,7 +218,6 @@ casks=(
 	expandrive
 	flux
 	handbrake
-	hipchat
 	istumbler
 	keyboard-cleaner
 	macdown
@@ -94,6 +248,7 @@ brews=(
 	ffmpeg
 	logstalgia
 	tvnamer
+	mackup
 )
 send_green "Installing ${#brews[@]} Brews..."
 
