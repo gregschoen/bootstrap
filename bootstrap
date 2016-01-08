@@ -163,7 +163,7 @@ fi
 
 if [[ -z $(defaults read com.apple.screencapture name | grep -E ^Screenshot$) ]]; then
 	send_green "(ScreenCapture) Default Screenshot Save Name: Screenshot"
-	defaults write com.apple.screencapture location "Screenshot"
+	defaults write com.apple.screencapture name "Screenshot"
 fi
 
 if [[ -z $(defaults read com.apple.screencapture location | grep -E Dropbox/Screenshots/$) ]]; then
