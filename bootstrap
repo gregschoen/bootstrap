@@ -241,7 +241,6 @@ casks=(
 	smcfancontrol
 	sublime-text
 	transmission
-	renamer
 	virtualbox
 	vlc
 	font-inconsolata
@@ -264,6 +263,7 @@ brews=(
 	logstalgia
 	tvnamer
 	mackup
+	ccze
 )
 send_green "Installing ${#brews[@]} Brews..."
 
