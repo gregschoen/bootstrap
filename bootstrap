@@ -242,6 +242,8 @@ casks=(
 	dropbox
 	expandrive
 	flux
+	font-inconsolata
+	font-ubuntu
 	handbrake
 	istumbler
 	keyboard-cleaner
@@ -253,8 +255,6 @@ casks=(
 	transmission
 	virtualbox
 	vlc
-	font-inconsolata
-	font-ubuntu
 )
 send_green "Installing ${#casks[@]} Casks... "
 
@@ -274,6 +274,7 @@ brews=(
 	tvnamer
 	mackup
 	ccze
+	pandoc
 )
 send_green "Installing ${#brews[@]} Brews..."
 
