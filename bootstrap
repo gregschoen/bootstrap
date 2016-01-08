@@ -61,6 +61,16 @@ if [[ -z $(defaults read NSGlobalDomain NSDocumentSaveNewDocumentsToCloud | grep
 	defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 fi
 
+if [[ -z $(defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled | grep 0) ]]; then
+	send_green "(LoginWindow) Guest Enabled: Off"
+	sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
+fi
+
+if [[ -z $(defaults read /Library/Preferences/com.apple.loginwindow SHOWFULLNAME | grep 1) ]]; then
+	send_green "(LoginWindow) Show Full Name: On"
+	sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
+fi
+
 if [[ -z $(defaults read com.apple.finder FXPreferredViewStyle | grep clmv) ]]; then
 	send_green "(Finder) Preferred View Style: Column View"
 	defaults write com.apple.finder FXPreferredViewStyle -string "clmv"; KILL_FINDER=true
