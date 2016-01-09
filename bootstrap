@@ -190,6 +190,22 @@ if [[ -z $(defaults read com.apple.menuextra.battery ShowPercent | grep 1) ]]; t
 	defaults write com.apple.menuextra.battery ShowPercent -bool true; KILL_SYSTEMUISERVER=true
 fi
 
+if [[ -z $(defaults read com.apple.menuextra.clock DateFormat | grep -E "^EEE MMM d  H:mm$") ]]; then
+	send_green "(Menu) Clock Date Format: EEE MMM d  H:mm"
+	defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  H:mm"; KILL_SYSTEMUISERVER=true
+fi
+
+if [[ -z $(defaults read com.apple.menuextra.clock FlashDateSeparators | grep 0) ]]; then
+	send_green "(Menu) Clock Flash Date Separator: Off"
+	defaults write com.apple.menuextra.clock FlashDateSeparators -bool false; KILL_SYSTEMUISERVER=true
+fi
+
+if [[ -z $(defaults read com.apple.menuextra.clock IsAnalog | grep 0) ]]; then
+	send_green "(Menu) Clock Is Analog: Off"
+	defaults write com.apple.menuextra.clock IsAnalog -bool false; KILL_SYSTEMUISERVER=true
+fi
+
+
 if [[ $KILL_FINDER ]]; then 
 	send_yellow "Killing Finder"; killall Finder; 
 fi
