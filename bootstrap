@@ -205,7 +205,6 @@ if [[ -z $(defaults read com.apple.menuextra.clock IsAnalog | grep 0) ]]; then
 	defaults write com.apple.menuextra.clock IsAnalog -bool false; KILL_SYSTEMUISERVER=true
 fi
 
-
 if [[ $KILL_FINDER ]]; then 
 	send_yellow "Killing Finder"; killall Finder; 
 fi
@@ -253,6 +252,28 @@ for i in ${taps[@]}; do
 done
 echo ""
 
+################################# Brews ################################
+brews=(
+	ack
+	ccze
+	ffmpeg
+	git
+	git-extras
+	htop-osx
+	logstalgia
+	mackup
+	pandoc
+	pngquant
+	tvnamer
+)
+send_green "Installing ${#brews[@]} Brews..."
+
+for i in ${brews[@]}; do
+	echo -n "$i "
+	[[ -n $(brew ls --versions $i) ]] || brew install $i
+done
+echo ""
+
 ################################# Casks ################################
 casks=(
 	dropbox
@@ -277,26 +298,6 @@ send_green "Installing ${#casks[@]} Casks... "
 for i in ${casks[@]}; do
 	echo -n "$i "
 	(silently brew cask ls --appdir=/Applications --fontdir=/Library/Fonts $i) || sudo brew cask install --force --appdir=/Applications --fontdir=/Library/Fonts $i;
-done
-echo ""
-
-################################# Brews ################################
-brews=(
-	git
-	git-extras
-	htop-osx
-	ffmpeg
-	logstalgia
-	tvnamer
-	mackup
-	ccze
-	pandoc
-)
-send_green "Installing ${#brews[@]} Brews..."
-
-for i in ${brews[@]}; do
-	echo -n "$i "
-	[[ -n $(brew ls --versions $i) ]] || brew install $i
 done
 echo ""
 
