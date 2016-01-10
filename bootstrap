@@ -256,10 +256,13 @@ echo ""
 brews=(
 	ack
 	ccze
+	colordiff
 	ffmpeg
+	giflossy
 	git
 	git-extras
 	htop-osx
+	imagemagick
 	logstalgia
 	mackup
 	pandoc
