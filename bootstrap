@@ -257,6 +257,7 @@ brews=(
 	ack
 	ccze
 	colordiff
+	exiftool
 	ffmpeg
 	giflossy
 	git
@@ -285,6 +286,7 @@ casks=(
 	font-inconsolata
 	font-ubuntu
 	handbrake
+	ipvanish-vpn
 	istumbler
 	keyboard-cleaner
 	macdown

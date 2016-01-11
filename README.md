@@ -1,6 +1,6 @@
 # Bootstrap
 
-A script to bootstrap a fresh Mac to fully configured. Current as of El Capitan. Still very beta, trying to decide the best patterns to use for this script.
+A script to bootstrap a fresh Mac to fully configured. Current as of El Capitan.
 
 ## Installation
 
