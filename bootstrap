@@ -291,6 +291,7 @@ casks=(
 	keyboard-cleaner
 	macdown
 	minecraft
+	puppet
 	slack
 	smcfancontrol
 	sublime-text
