@@ -280,6 +280,7 @@ echo ""
 
 ################################# Casks ################################
 casks=(
+	beamer
 	dropbox
 	expandrive
 	flux
@@ -294,8 +295,11 @@ casks=(
 	puppet
 	slack
 	smcfancontrol
+	spotify
 	sublime-text
+	torbrowser
 	transmission
+	vagrant
 	virtualbox
 	vlc
 )
