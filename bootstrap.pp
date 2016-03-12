@@ -49,5 +49,27 @@ node default
 		target => "/$home/$dropbox/.ssh/config",
 	}
 
+	# ExpanDrive Settings
+	file { "/$home/Library/Application Support/ExpanDrive/expandrive5.favorites.js":
+		source => "/$home/$dropbox/Library/Application Support/ExpanDrive/${username}-expandrive5.favorites.js"
+	}
+	file { "/$home/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense":
+		target => "/$home/$dropbox/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense"
+	}
+
+	# Minecraft Screenshots and Settings
+	file { "/$home/Library/Application Support/minecraft/screenshots/":
+		force => true,
+		target => "/$home/$dropbox/Library/Application Support/minecraft/screenshots",
+	}
+	file { "/$home/Library/Application Support/minecraft/launcher_profiles.json":
+		target => "/$home/$dropbox/Library/Application Support/minecraft/launcher_profiles.json",
+	}
+	file { "/$home/Library/Application Support/minecraft/options.txt":
+		target => "/$home/$dropbox/Library/Application Support/minecraft/options.txt",
+	}
+	file { "/$home/Library/Application Support/minecraft/servers.dat":
+		target => "/$home/$dropbox/Library/Application Support/minecraft/servers.dat",
+	}
 
 }
