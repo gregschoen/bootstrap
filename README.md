@@ -9,8 +9,10 @@ bash -c "$(curl -sL https://raw.github.com/gregschoen/bootstrap/master/bootstrap
 ```
 
 ```sh
-mackup restore --dry-run
+puppet apply bootstrap.pp
 ```
+
+
 
 ## Included Software
 
