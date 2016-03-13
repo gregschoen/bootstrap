@@ -58,18 +58,23 @@ node default
 	}
 
 	# Minecraft Screenshots and Settings
-	file { "/$home/Library/Application Support/minecraft/screenshots/":
+	file { "/$home/Library/Application Support/minecraft/screenshots":
 		force => true,
-		target => "/$home/$dropbox/Library/Application Support/minecraft/screenshots",
+		target => "/$home/Dropbox/Minecraft/screenshots",
 	}
 	file { "/$home/Library/Application Support/minecraft/launcher_profiles.json":
-		target => "/$home/$dropbox/Library/Application Support/minecraft/launcher_profiles.json",
+		target => "/$home/Dropbox/Minecraft/launcher_profiles.json",
 	}
 	file { "/$home/Library/Application Support/minecraft/options.txt":
-		target => "/$home/$dropbox/Library/Application Support/minecraft/options.txt",
+		target => "/$home/Dropbox/Minecraft/options.txt",
 	}
 	file { "/$home/Library/Application Support/minecraft/servers.dat":
-		target => "/$home/$dropbox/Library/Application Support/minecraft/servers.dat",
+		target => "/$home/Dropbox/Minecraft/servers.dat",
+	}
+
+	# Sublime Text User Packages
+	file { "/$home/Library/Application Support/Sublime Text 2/Packages/User": 
+		target => "/$home/$dropbox/Library/Application Support/Sublime Text 2/Packages/User"
 	}
 
 }

@@ -12,15 +12,12 @@ bash -c "$(curl -sL https://raw.github.com/gregschoen/bootstrap/master/bootstrap
 puppet apply bootstrap.pp
 ```
 
-
-
 ## Included Software
 
 - [homebrew](https://github.com/Homebrew/homebrew) - package manager
 - [homebrew-dupes](https://github.com/Homebrew/homebrew-dupes) - osx duplicate software
 - [homebrew-cask](https://github.com/caskroom/homebrew-cask) - app installation
 - [homebrew-fonts](https://github.com/caskroom/homebrew-fonts) - font installation
-- [mackup](https://github.com/lra/mackup) - dropbox dotfiles symlinks
 
 ## Notes
 
