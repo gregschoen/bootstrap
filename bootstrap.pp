@@ -49,11 +49,17 @@ node default
 		target => "/$home/$dropbox/.ssh/config",
 	}
 
+	file { "/$home/Library/Application Support/ExpanDrive/":
+		ensure => directory,
+	}
+
 	# ExpanDrive Settings
 	file { "/$home/Library/Application Support/ExpanDrive/expandrive5.favorites.js":
+		force => true,
 		source => "/$home/$dropbox/Library/Application Support/ExpanDrive/${username}-expandrive5.favorites.js"
 	}
 	file { "/$home/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense":
+		force => true,
 		target => "/$home/$dropbox/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense"
 	}
 
@@ -74,6 +80,7 @@ node default
 
 	# Sublime Text User Packages
 	file { "/$home/Library/Application Support/Sublime Text 2/Packages/User": 
+		force => true,
 		target => "/$home/$dropbox/Library/Application Support/Sublime Text 2/Packages/User"
 	}
 

@@ -15,7 +15,7 @@ send_green() { echo "----> ${GREEN}${1}${RESTORE}"; }
 send_yellow() { echo "----> ${YELLOW}${1}${RESTORE}"; }
 send_red() { echo "----> ${RED}${1}${RESTORE}"; }
 
-send_red "gregschoen/bootstrap v0.1.0"
+send_red "gregschoen/bootstrap v0.1.1"
 
 ################################# Preferences ################################
 if [[ -z $(sudo grep "$USER.*NOPASSWD" /etc/sudoers) ]]; then
@@ -207,6 +207,22 @@ if [[ -z $(defaults read com.apple.menuextra.clock IsAnalog | grep 0) ]]; then
 	defaults write com.apple.menuextra.clock IsAnalog -bool false; KILL_SYSTEMUISERVER=true
 fi
 
+if [[ -z $(/usr/libexec/PlistBuddy -c "Print :DesktopViewSettings:IconViewSettings:arrangeBy" ~/Library/Preferences/com.apple.finder.plist | grep name) ]]; then
+	send_green "(Finder) Desktop Arrange By: Name"
+	/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist; KILL_FINDER=true
+fi
+
+if [[ -z $(/usr/libexec/PlistBuddy -c "Print :DesktopViewSettings:IconViewSettings:iconSize" ~/Library/Preferences/com.apple.finder.plist | egrep ^32) ]]; then
+	send_green "(Finder) Icon Size: 32"
+	/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 32" ~/Library/Preferences/com.apple.finder.plist; KILL_FINDER=true
+fi
+
+if [[ -z $(/usr/libexec/PlistBuddy -c "Print :DesktopViewSettings:IconViewSettings:textSize" ~/Library/Preferences/com.apple.finder.plist | egrep ^10) ]]; then
+	send_green "(Finder) Text Size: 10"
+	/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:textSize 10" ~/Library/Preferences/com.apple.finder.plist; KILL_FINDER=true
+fi
+
+
 if [[ $KILL_FINDER ]]; then 
 	send_yellow "Killing Finder"; killall Finder; 
 fi
@@ -220,6 +236,7 @@ fi
 if ! [[ -x /Library/Developer/CommandLineTools ]]; then
 	send_green 'Installing Command Line Tools...'
 	xcode-select --install
+	read -p "Press any key to continue... " -n1 -s
 fi
 
 # multi-user and homebrew gets weird
@@ -230,8 +247,9 @@ paths=(
 	"/opt/homebrew-cask"
 )
 
-sudo chgrp -R admin ${paths[@]}
-sudo chmod -R g+w ${paths[@]}
+# -f to ignore errors due to missing subdirectories at this point
+sudo chgrp -f -R admin ${paths[@]}
+sudo chmod -f -R g+w ${paths[@]}
 
 if [ ! -x /usr/local/bin/brew ]; then
 	send_yellow "Installing Homebrew..."
@@ -319,6 +337,7 @@ gems=(
 	jekyll-assets
 	jekyll-sitemap
 	jekyll-paginate
+	uglifier
 	s3_website
 )
 send_green "Installing ${#gems[@]} Gems..."
