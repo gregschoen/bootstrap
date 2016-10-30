@@ -12,6 +12,11 @@ bash -c "$(curl -sL https://raw.github.com/gregschoen/bootstrap/master/bootstrap
 puppet apply bootstrap.pp
 ```
 
+## Bootstrap Notes
+
+- Install OSXFuse via https://osxfuse.github.io/ (Compatibility Layer)
+- Install Veracrypt via https://veracrypt.codeplex.com/
+
 ## Included Software
 
 - [homebrew](https://github.com/Homebrew/homebrew) - package manager

@@ -3,7 +3,7 @@ node default
 
 	$username = $id
 	$home = "Users/$username"
-	$dropbox = "Dropbox/Mackup"
+	$dropbox = "Dropbox/Servers/macbook"
 
 	File { 
 		ensure => 'link',
@@ -54,10 +54,10 @@ node default
 	}
 
 	# ExpanDrive Settings
-	file { "/$home/Library/Application Support/ExpanDrive/expandrive5.favorites.js":
-		force => true,
-		source => "/$home/$dropbox/Library/Application Support/ExpanDrive/${username}-expandrive5.favorites.js"
-	}
+	# file { "/$home/Library/Application Support/ExpanDrive/expandrive5.favorites.js":
+	# 	force => true,
+	# 	source => "/$home/$dropbox/Library/Application Support/ExpanDrive/${username}-expandrive5.favorites.js"
+	# }
 	file { "/$home/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense":
 		force => true,
 		target => "/$home/$dropbox/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense"

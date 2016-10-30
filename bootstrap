@@ -43,6 +43,11 @@ if [[ -z $(sudo systemsetup -getrestartfreeze | grep "Restart After Freeze: On")
 	sudo systemsetup -setrestartfreeze on
 fi
 
+if [[ -z $(defaults read /Library/Preferences/com.apple.loginwindow SHOWFULLNAME | grep 1) ]]; then
+	send_green "(LoginWindow) Show Full Name: On"
+	sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
+fi
+
 if [[ -z $(defaults read com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking | grep 1) ]]; then
 	send_green "(System) Trackpad Tap to Click: On"
 	defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
@@ -66,11 +71,6 @@ fi
 if [[ -z $(defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled | grep 0) ]]; then
 	send_green "(LoginWindow) Guest Enabled: Off"
 	sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
-fi
-
-if [[ -z $(defaults read /Library/Preferences/com.apple.loginwindow SHOWFULLNAME | grep 1) ]]; then
-	send_green "(LoginWindow) Show Full Name: On"
-	sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
 fi
 
 if [[ -z $(defaults read com.apple.finder FXPreferredViewStyle | grep clmv) ]]; then
@@ -207,6 +207,26 @@ if [[ -z $(defaults read com.apple.menuextra.clock IsAnalog | grep 0) ]]; then
 	defaults write com.apple.menuextra.clock IsAnalog -bool false; KILL_SYSTEMUISERVER=true
 fi
 
+if [[ -z $(defaults read com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick | grep 2) ]]; then
+	send_green "(Trackpad) Corner Secondary Click: 2"
+	defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
+fi
+
+if [[ -z $(defaults read com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick | grep 1) ]]; then
+	send_green "(Trackpad) Right Click: On"
+	defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+fi
+
+if [[ -z $(defaults -currentHost read NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior | grep 1) ]]; then
+	send_green "(Trackpad) Corner Click Behavior: 1"
+	defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
+fi
+
+if [[ -z $(defaults -currentHost read NSGlobalDomain com.apple.trackpad.enableSecondaryClick | grep 1) ]]; then
+	send_green "(Trackpad) Enable Secondary Click: On"
+	defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
+fi
+
 if [[ -z $(/usr/libexec/PlistBuddy -c "Print :DesktopViewSettings:IconViewSettings:arrangeBy" ~/Library/Preferences/com.apple.finder.plist | grep name) ]]; then
 	send_green "(Finder) Desktop Arrange By: Name"
 	/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist; KILL_FINDER=true
@@ -230,7 +250,7 @@ if [[ $KILL_DOCK ]]; then
 	send_yellow "Killing Dock"; killall Dock; 
 fi
 if [[ $KILL_SYSTEMUISERVER ]]; then 
-	send_yellow "Killing SystemUIServer"; killall SystemUIServer; 
+	send_yellow "Killing SystemUIServer"; killall SystemUIServer;
 fi
 
 if ! [[ -x /Library/Developer/CommandLineTools ]]; then
@@ -243,11 +263,11 @@ fi
 send_green "Repairing file permissions..."
 paths=(
 	"/usr/local"
-	"/Library/Caches/Homebrew"
+# 	"/Library/Caches/Homebrew"
 	"/opt/homebrew-cask"
 )
 
-# -f to ignore errors due to missing subdirectories at this point
+# # -f to ignore errors due to missing subdirectories at this point
 sudo chgrp -f -R admin ${paths[@]}
 sudo chmod -f -R g+w ${paths[@]}
 
@@ -278,17 +298,23 @@ brews=(
 	ccze
 	colordiff
 	exiftool
-	ffmpeg
+	# ffmpeg
+	"ffmpeg --with-libvpx --with-libvorbis --with-fdk-aacc"
 	giflossy
 	git
 	git-extras
+	homebrew/fuse/ntfs-3g
 	htop-osx
 	imagemagick
 	logstalgia
 	mackup
+	mkvtoolnix
+	nodejs
 	pandoc
 	pngquant
+	rename
 	tvnamer
+	youtube-dl
 )
 send_green "Installing ${#brews[@]} Brews..."
 
@@ -300,27 +326,36 @@ echo ""
 
 ################################# Casks ################################
 casks=(
-	beamer
+	bitbar
 	dropbox
 	expandrive
+	firefox
 	flux
 	font-inconsolata
 	font-ubuntu
 	handbrake
+	hex-fiend
 	ipvanish-vpn
 	istumbler
+	java
 	keyboard-cleaner
 	macdown
 	minecraft
+	openoffice
+	playonmac
+	processing
 	puppet
 	slack
 	smcfancontrol
 	spotify
 	sublime-text
+	steam
+	the-unarchiver
 	torbrowser
 	transmission
 	vagrant
 	virtualbox
+	virtualbox-extension-pack
 	vlc
 )
 send_green "Installing ${#casks[@]} Casks... "
