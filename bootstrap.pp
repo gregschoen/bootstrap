@@ -27,17 +27,8 @@ node default
 	file { "/$home/.gitconfig":
 		target => "/$home/$dropbox/.gitconfig",
 	}
-	file { "/$home/.gregschoen_bash_history":
-		target => "/$home/$dropbox/.gregschoen_bash_history",
-	}
-	file { "/$home/.gregdanger_bash_history":
-		target => "/$home/$dropbox/.gregdanger_bash_history",
-	}
 	file { "/$home/.htoprc":
 		target => "/$home/$dropbox/.htoprc",
-	}
-	file { "/$home/.mackup":
-		target => "/$home/$dropbox/.mackup",
 	}
 	file { "/$home/.screenrc":
 		target => "/$home/$dropbox/.screenrc",
@@ -48,40 +39,17 @@ node default
 	file { "/$home/.ssh/config":
 		target => "/$home/$dropbox/.ssh/config",
 	}
-
-	file { "/$home/Library/Application Support/ExpanDrive/":
-		ensure => directory,
+	file { "/$home/.ngrok2": 
+		target => "/$home/$dropbox/.ngrok2"
 	}
-
-	# ExpanDrive Settings
-	# file { "/$home/Library/Application Support/ExpanDrive/expandrive5.favorites.js":
-	# 	force => true,
-	# 	source => "/$home/$dropbox/Library/Application Support/ExpanDrive/${username}-expandrive5.favorites.js"
-	# }
-	file { "/$home/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense":
-		force => true,
-		target => "/$home/$dropbox/Library/Application Support/ExpanDrive/ExpanDrive5.ExpanDriveLicense"
-	}
-
-	# Minecraft Screenshots and Settings
-	file { "/$home/Library/Application Support/minecraft/screenshots":
-		force => true,
-		target => "/$home/Dropbox/Minecraft/screenshots",
-	}
-	file { "/$home/Library/Application Support/minecraft/launcher_profiles.json":
-		target => "/$home/Dropbox/Minecraft/launcher_profiles.json",
-	}
-	file { "/$home/Library/Application Support/minecraft/options.txt":
-		target => "/$home/Dropbox/Minecraft/options.txt",
-	}
-	file { "/$home/Library/Application Support/minecraft/servers.dat":
-		target => "/$home/Dropbox/Minecraft/servers.dat",
+	file { "/$home/.aws": 
+		target => "/$home/$dropbox/.awd"
 	}
 
 	# Sublime Text User Packages
-	file { "/$home/Library/Application Support/Sublime Text 2/Packages/User": 
+	file { "/$home/Library/Application Support/Sublime Text 3/Packages/User": 
 		force => true,
-		target => "/$home/$dropbox/Library/Application Support/Sublime Text 2/Packages/User"
+		target => "/$home/$dropbox/Library/Application Support/Sublime Text 3/Packages/User"
 	}
 
 }

@@ -259,18 +259,6 @@ if ! [[ -x /Library/Developer/CommandLineTools ]]; then
 	read -p "Press any key to continue... " -n1 -s
 fi
 
-# multi-user and homebrew gets weird
-send_green "Repairing file permissions..."
-paths=(
-	"/usr/local"
-# 	"/Library/Caches/Homebrew"
-	"/opt/homebrew-cask"
-)
-
-# # -f to ignore errors due to missing subdirectories at this point
-sudo chgrp -f -R admin ${paths[@]}
-sudo chmod -f -R g+w ${paths[@]}
-
 if [ ! -x /usr/local/bin/brew ]; then
 	send_yellow "Installing Homebrew..."
 	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -281,8 +269,8 @@ else
 fi
 
 taps=(
-	homebrew/dupes
-	caskroom/fonts
+	homebrew/cask-fonts
+	homebrew/cask-versions
 )
 send_green "Installing ${#taps[@]} Taps..."
 
@@ -292,27 +280,29 @@ for i in ${taps[@]}; do
 done
 echo ""
 
+# homebrew/fuse/ntfs-3g
+
 ################################# Brews ################################
 brews=(
 	ack
+	ant
 	ccze
 	colordiff
 	exiftool
-	# ffmpeg
-	"ffmpeg --with-libvpx --with-libvorbis --with-fdk-aacc"
+	ffmpeg
 	giflossy
 	git
 	git-extras
-	homebrew/fuse/ntfs-3g
-	htop-osx
+	gpg
+	id3lib
 	imagemagick
-	logstalgia
-	mackup
+	jq
+	locateme
 	mkvtoolnix
-	nodejs
 	pandoc
 	pngquant
 	rename
+	truncate
 	tvnamer
 	youtube-dl
 )
@@ -326,32 +316,21 @@ echo ""
 
 ################################# Casks ################################
 casks=(
-	bitbar
+	java
 	dropbox
-	expandrive
-	firefox
-	flux
-	font-inconsolata
 	font-ubuntu
 	handbrake
-	hex-fiend
 	ipvanish-vpn
-	istumbler
-	java
 	keyboard-cleaner
-	macdown
-	minecraft
-	openoffice
-	playonmac
-	processing
-	puppet
-	slack
+	kindlegen
+	licecap
+	ngrok
+	puppet-agent
+	qlvideo
 	smcfancontrol
-	spotify
 	sublime-text
-	steam
 	the-unarchiver
-	torbrowser
+	tor-browser
 	transmission
 	vagrant
 	virtualbox
@@ -362,25 +341,20 @@ send_green "Installing ${#casks[@]} Casks... "
 
 for i in ${casks[@]}; do
 	echo -n "$i "
-	(silently brew cask ls --appdir=/Applications --fontdir=/Library/Fonts $i) || sudo brew cask install --force --appdir=/Applications --fontdir=/Library/Fonts $i;
+	(silently brew cask ls --appdir=/Applications --fontdir=/Library/Fonts $i) || brew cask install --force --appdir=/Applications --fontdir=/Library/Fonts $i;
 done
 echo ""
 
 ################################# Gems ################################
-gems=(
-	jekyll
-	jekyll-assets
-	jekyll-sitemap
-	jekyll-paginate
-	uglifier
-	s3_website
-)
-send_green "Installing ${#gems[@]} Gems..."
+# gems=(
+# 	rake
+# )
+# send_green "Installing ${#gems[@]} Gems..."
 
-for i in ${gems[@]}; do
-	echo -n "$i "
-	[[ -n $(sudo gem list | grep "$i ") ]] || sudo gem install $i
-done;
-echo ""
+# for i in ${gems[@]}; do
+# 	echo -n "$i "
+# 	[[ -n $(sudo gem list | grep "$i ") ]] || sudo gem install $i
+# done;
+# echo ""
 
 send_yellow "All done. Enjoy your shiny new computer!"
