@@ -1,6 +1,6 @@
 # Bootstrap
 
-A script to bootstrap a fresh Mac to fully configured. Current as of El Capitan.
+A script to bootstrap a fresh Mac to fully configured. Current as of Sonoma.
 
 ## Installation
 
@@ -8,24 +8,14 @@ A script to bootstrap a fresh Mac to fully configured. Current as of El Capitan.
 bash -c "$(curl -sL https://raw.github.com/gregschoen/bootstrap/master/bootstrap)"
 ```
 
-```sh
-puppet apply bootstrap.pp
-```
+## Hot corners sleep display and password required
+This setting doesn't seem to be easily modded with defaults so do it manually:
 
-## Bootstrap Notes
+```Settings -> Lock Screen -> Require password.. display is turned off -> After 5 Seconds```
 
-- Install OSXFuse via https://osxfuse.github.io/ (Compatibility Layer)
-- Install Veracrypt via https://veracrypt.codeplex.com/
+## Disable Spotlight for most everything but /Applications
 
-## Included Software
-
-- [homebrew](https://github.com/Homebrew/homebrew) - package manager
-- [homebrew-dupes](https://github.com/Homebrew/homebrew-dupes) - osx duplicate software
-- [homebrew-cask](https://github.com/caskroom/homebrew-cask) - app installation
-- [homebrew-fonts](https://github.com/caskroom/homebrew-fonts) - font installation
+- https://apple.stackexchange.com/questions/471714/spotlight-indexing-turned-off-but-want-to-turn-it-on-only-for-applications
 
 ## Notes
-
-- `--appdir=/Applications --fontdir=/Library/Fonts` hacks are in the script until `homebrew-cask` does this as its default behavior
-- Google Chrome and Firefox interact with 1Password when linked, must be installed manually until cask apps are moved instead of linked
-
+- Restart needs to be done after setting the defaults otherwise they won't finalize

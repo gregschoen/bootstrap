@@ -9,13 +9,15 @@ RED=$(echo -en '\033[00;31m')
 GREEN=$(echo -en '\033[00;32m')
 YELLOW=$(echo -en '\033[00;33m')
 
+BREW_M1="/opt/homebrew/bin/brew"
+
 silently() { $* >/dev/null 2>&1; }
 ignore_error() { $* || echo -n; }
 send_green() { echo "----> ${GREEN}${1}${RESTORE}"; }
 send_yellow() { echo "----> ${YELLOW}${1}${RESTORE}"; }
 send_red() { echo "----> ${RED}${1}${RESTORE}"; }
 
-send_red "gregschoen/bootstrap v0.1.1"
+send_red "gregschoen/bootstrap v0.1.3_2024-06-05"
 
 ################################# Preferences ################################
 if [[ -z $(sudo grep "$USER.*NOPASSWD" /etc/sudoers) ]]; then
@@ -33,10 +35,10 @@ if [[ -z $(sudo defaults read /Library/Preferences/com.apple.alf globalstate | g
 	sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 fi
 
-if [[ -z $(sudo systemsetup -getremotelogin | grep "Remote Login: On") ]]; then
-	send_green "(System) Remote Login: On"
-	sudo systemsetup -setremotelogin on
-fi
+#if [[ -z $(sudo systemsetup -getremotelogin | grep "Remote Login: On") ]]; then
+#	send_green "(System) Remote Login: On"
+#	sudo systemsetup -setremotelogin on
+#fi
 
 if [[ -z $(sudo systemsetup -getrestartfreeze | grep "Restart After Freeze: On") ]]; then
 	send_green "(System) Restart After Freeze: On"
@@ -242,69 +244,66 @@ if [[ -z $(/usr/libexec/PlistBuddy -c "Print :DesktopViewSettings:IconViewSettin
 	/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:textSize 10" ~/Library/Preferences/com.apple.finder.plist; KILL_FINDER=true
 fi
 
+# if first run
+if [[ FALSE ]];  then
 
-if [[ $KILL_FINDER ]]; then 
-	send_yellow "Killing Finder"; killall Finder; 
+	if [[ $KILL_FINDER ]]; then 
+		send_yellow "Killing Finder"; killall Finder; 
+	fi
+	if [[ $KILL_DOCK ]]; then 
+		send_yellow "Killing Dock"; killall Dock; 
+	fi
+	if [[ $KILL_SYSTEMUISERVER ]]; then 
+		send_yellow "Killing SystemUIServer"; killall SystemUIServer;
+	fi
+
+	if ! [[ -x /Library/Developer/CommandLineTools ]]; then
+		send_green 'Installing Command Line Tools...'
+		xcode-select --install
+		read -p "Press any key to continue... " -n1 -s
+	fi
+
+	if [ ! -x BREW_M1 ]; then
+		send_yellow "Installing Homebrew..."
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	else
+		send_green "Updating Homebrew..."
+		brew update
+		brew upgrade
+	fi
+
 fi
-if [[ $KILL_DOCK ]]; then 
-	send_yellow "Killing Dock"; killall Dock; 
-fi
-if [[ $KILL_SYSTEMUISERVER ]]; then 
-	send_yellow "Killing SystemUIServer"; killall SystemUIServer;
-fi
-
-if ! [[ -x /Library/Developer/CommandLineTools ]]; then
-	send_green 'Installing Command Line Tools...'
-	xcode-select --install
-	read -p "Press any key to continue... " -n1 -s
-fi
-
-if [ ! -x /usr/local/bin/brew ]; then
-	send_yellow "Installing Homebrew..."
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-else
-	send_green "Updating Homebrew..."
-	brew update
-	brew upgrade
-fi
-
-taps=(
-	homebrew/cask-fonts
-	homebrew/cask-versions
-)
-send_green "Installing ${#taps[@]} Taps..."
-
-for i in ${taps[@]}; do
-	echo -n "$i "
-	[[ ! -z $(brew tap | grep -E "^${i}$") ]] || brew tap $i;
-done
-echo ""
-
-# homebrew/fuse/ntfs-3g
 
 ################################# Brews ################################
 brews=(
 	ack
-	ant
-	ccze
-	colordiff
+	awscli
+	curl
 	exiftool
+	fastfetch
 	ffmpeg
-	giflossy
+	gifsicle
 	git
 	git-extras
-	gpg
-	id3lib
+	hugo
 	imagemagick
-	jq
-	locateme
-	mkvtoolnix
-	pandoc
+	java
+	openjdk@11
+	micro
+	php
 	pngquant
-	rename
-	truncate
-	tvnamer
-	youtube-dl
+	qemu
+	screen
+	stow
+	watch
+	wget
+	yt-dlp
+
+	# stable diffusion webui
+	cmake
+	protobuf
+	rust
+	python@3.10
 )
 send_green "Installing ${#brews[@]} Brews..."
 
@@ -316,45 +315,37 @@ echo ""
 
 ################################# Casks ################################
 casks=(
-	java
+	bitwarden
+	brave-browser
+	coteditor
 	dropbox
 	font-ubuntu
-	handbrake
-	ipvanish-vpn
 	keyboard-cleaner
-	kindlegen
-	licecap
+	kindle
+	kiwix
+	minecraft
+	mountain-duck
 	ngrok
-	puppet-agent
-	qlvideo
-	smcfancontrol
+	obs
+	openemu
+	pocket-casts
+	# private-internet-access
+	spotify
+	steam
 	sublime-text
 	the-unarchiver
-	tor-browser
 	transmission
 	vagrant
-	virtualbox
-	virtualbox-extension-pack
+	veracrypt
 	vlc
+	whisky
 )
 send_green "Installing ${#casks[@]} Casks... "
 
 for i in ${casks[@]}; do
 	echo -n "$i "
-	(silently brew cask ls --appdir=/Applications --fontdir=/Library/Fonts $i) || brew cask install --force --appdir=/Applications --fontdir=/Library/Fonts $i;
+	(silently brew ls --cask $i) || brew install --cask $i;
 done
 echo ""
-
-################################# Gems ################################
-# gems=(
-# 	rake
-# )
-# send_green "Installing ${#gems[@]} Gems..."
-
-# for i in ${gems[@]}; do
-# 	echo -n "$i "
-# 	[[ -n $(sudo gem list | grep "$i ") ]] || sudo gem install $i
-# done;
-# echo ""
 
 send_yellow "All done. Enjoy your shiny new computer!"
